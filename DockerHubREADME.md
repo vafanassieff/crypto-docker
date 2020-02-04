@@ -4,6 +4,8 @@ This repository contains the various docker image that i build and use for my cr
 
 Every images are pushed to [Docker Hub](https://hub.docker.com/u/vafanassieff) and to my [personnal](https://docker.afa.ovh/) registry as a mirror.
 
+You can find the source code for every Dockerfile and script on the [repo](https://github.com/vafanassieff/crypto-docker) github page.
+
 They comes with handy customisation like setting the user id or groupd id and keeping sensible data like auth crendentials in environement variable.
 
 ### Introduction
