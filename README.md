@@ -39,7 +39,7 @@ docker create --name bitcoind \
     -p 8333:8333 \
     -e UID=1000 \
     -e GID=1000 \
-    -e BITCOIN_RPC_AUTH=user:encrypted_password \
+    -e BITCOIN_RPC_AUTH=user:salt$password_hmac \
     -v /path/to/bitcoin:/bitcoin/.bitcoin
     -v /path/to/bitcoin.conf:/bitcoin/.bitcoin/bitcoin.conf \
     vafanassieff/bitcoin
