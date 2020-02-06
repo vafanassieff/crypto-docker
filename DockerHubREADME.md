@@ -33,9 +33,6 @@ In the doc you can find example `docker-compose.yml`
 
 ### Bitcoin
 
-######/!\ Currently the bitcoin image are not compiled with wallet-enable/!\
-The image is meant to be just a bitcoin full node
-
 The bitcoin image usage is pretty simple :
 
 ```
