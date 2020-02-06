@@ -51,7 +51,7 @@ docker create --name lnd \
 
 ```
 
-You can map your own `lnd.conf` file from your host system if you want to customize your lightning daemon, like adding `txindex=1` or using texter etc ...
+You can map your own `lnd.conf` file from your host system if you want to customize your lightning daemon.
 
 Beware, if you use any env var it will overide your settings in your `lnd.conf` file.
 

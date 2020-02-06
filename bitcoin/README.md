@@ -48,7 +48,7 @@ docker create --name bitcoind \
 
 ```
 
-You can map your own `bitcoin.conf` file from your host system if you want to customize your container, like adding `txindex=1` or using texter etc ...
+You can map your own `bitcoin.conf` file from your host system if you want to customize your container, like adding `txindex=1`.
 
 If you use the `BITCOIN_RPC_AUTH` variable it will replace the `rpcauth=` line in your `bitcoin.conf` file if it is not already set.
 This is highly recomended to generate the credentials using [bitcoin core auth.py script](https://github.com/bitcoin/bitcoin/blob/master/share/rpcauth/rpcauth.py).
