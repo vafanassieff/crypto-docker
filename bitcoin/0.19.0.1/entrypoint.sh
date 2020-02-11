@@ -35,8 +35,7 @@ if [ ! '$(stat -c %u "${BITCOIN_PATH}")' = "$(id -u bitcoin)" ]; then
   chown -R bitcoin:bitcoin $BITCOIN_PATH
 fi
 
-if [ "$1" = "bitcoind" ] || [ "$1" = "bitcoin-cli" ] || [ "$1" = "bitcoin-tx" ]; then
-
+if [ "$1" = "bitcoind" ]; then
   # Configuring bitcoin may add more option later ...
   if [ ! -f "$BITCOIN_CONF_PATH" ]; then
     echo "$BITCOIN_CONF_PATH does not exist, creating it ..."
@@ -46,13 +45,20 @@ if [ "$1" = "bitcoind" ] || [ "$1" = "bitcoin-cli" ] || [ "$1" = "bitcoin-tx" ];
 
   if [ ! -z "${BITCOIN_RPC_AUTH}" ]; then
     echo "Setting the rpc auth ..."
-    grep -q "^rpcauth=" $BITCOIN_CONF_PATH && \
-    sed -i "s/^rpcauth=.*/rpcauth=${BITCOIN_RPC_AUTH}/" $BITCOIN_CONF_PATH \
-    || echo "rpcauth=${BITCOIN_RPC_AUTH}" >> $BITCOIN_CONF_PATH
+    if grep -q "^rpcauth=" $BITCOIN_CONF_PATH;then
+      sed "s/^rpcauth=.*/rpcauth=${BITCOIN_RPC_AUTH}/" $BITCOIN_CONF_PATH > /tmp.conf
+      cat /tmp.conf > $BITCOIN_CONF_PATH
+      rm /tmp.conf
+    else
+      echo "rpcauth=${BITCOIN_RPC_AUTH}" >> $BITCOIN_CONF_PATH
+    fi
   fi
-  echo "Running $1"
+
+  exec su-exec bitcoin "$@" 
+fi
+
+if [ "$1" = "bitcoin-cli" ] || [ "$1" = "bitcoin-tx" ]; then
   exec su-exec bitcoin "$@"
 fi
 
-echo "Executing $@"
 exec "$@"
