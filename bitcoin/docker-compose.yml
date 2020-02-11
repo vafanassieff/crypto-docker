@@ -5,7 +5,7 @@ volumes:
 
 services:
   bitcoin:
-    image: vafannassieff/bitcoin:0.19.1
+    image: vafanassieff/bitcoin:0.19.1
     container_name: bitcoin
     restart: always
     volumes:
@@ -15,8 +15,9 @@ services:
       - 8332:8332
       - 8333:8333
     environment:
-      - USER_ID=1337
-      - GROUP_ID=1337
+      - USER_ID=501
+      - GROUP_ID=20
       # user: dev | password: dev
       # Created with https://github.com/bitcoin/bitcoin/blob/master/share/rpcauth/rpcauth.py
-      - BITCOIN_RPC_AUTH=dev:43f25f16916424e46866c195088577ae$f2a930e0bd9aecdcd57b31eb2fccdc6c457cc10b7ef2ec0fb55e153965c99213
+      # You have to escape '$' char for docker-compose file, add another $ in front of $ chat
+      - BITCOIN_RPC_AUTH=dev:43f25f16916424e46866c195088577ae$$f2a930e0bd9aecdcd57b31eb2fccdc6c457cc10b7ef2ec0fb55e153965c99213
