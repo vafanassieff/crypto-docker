@@ -38,16 +38,18 @@ fi
 if [ "$1" = "lnd" ] || [ "$1" = "lnd-cli" ] || [ "$1" = "lnd-tx" ]; then
 
   edit_conf () {
-    grep -q "^$1=" $LND_CONF_PATH && \
-    sed -i "s/^$1=.*/$1=$2/" $LND_CONF_PATH \
-    || echo "$1=$2" >> $LND_CONF_PATH
+    if grep -q "^$1=" $LND_CONF_PATH;then
+      VAR=$(echo "$2" | sed 's/[&=\|]/\&/g')
+      sed 's/^$1=.*/$1=${VAR}/' $LND_CONF_PATH > /tmp.conf
+      cat /tmp.conf > $LND_CONF_PATH
+      rm /tmp.conf
+    else
+      echo "$1=$2" >> $LND_CONF_PATH
+    fi
   }
 
-  # Configuring lnd may add more option later ...
-  if [ ! -f "$LND_CONF_PATH" ]; then
-    echo "$LND_CONF_PATH does not exist, creating it ..."
-    touch $LND_CONF_PATH
-    echo -e "bitcoin.active=1\nbitcoin.mainnet=1\nbitcoin.node=bitcoind" > $LND_CONF_PATH
+  if ! grep -q "\[Bitcoind\]" $LND_CONF_PATH;then
+    echo -e "\n[Bitcoind]" >> $LND_CONF_PATH
   fi
 
   # Configuring lnd may add more option later ...
@@ -71,7 +73,6 @@ if [ "$1" = "lnd" ] || [ "$1" = "lnd-cli" ] || [ "$1" = "lnd-tx" ]; then
     edit_conf "bitcoind.zmqpubrawtx" ${BITCOIND_ZMQRAWTX}
   fi
 
-  echo "Running $1"
   exec su-exec lnd "$@"
 fi
 
