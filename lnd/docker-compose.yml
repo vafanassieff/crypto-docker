@@ -1,0 +1,25 @@
+version: '3.5'
+
+volumes:
+  bitcoin:
+
+services:
+  lnd:
+    image: vafanassieff/lnd:v0.9.1-beta
+    container_name: lnd
+    restart: always
+    volumes:
+      - ${PWD}/lnd.conf:/lnd/.lnd/lnd.conf
+      - ${PWD/lnd:/lnd/.lnd
+    ports:
+      - 9735:9735
+      - 8080:8080
+      - 10009:10009
+    environment:
+      - USER_ID=1000
+      - GROUP_ID=1000
+      - BITCOIND_RPCUSER=user
+      - BITCOIND_RPCPASS=pass
+      - BITCOIND_RPCHOST=127.0.0.1
+      - BITCOIND_ZMQRAWBLOCK=tcp://127.0.0.1:28332
+      - BITCOIND_ZMQRAWTX=tcp://127.0.0.1:28333
