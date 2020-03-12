@@ -1,0 +1,73 @@
+version: '3.5'
+
+x-logging: 
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "5m"
+    max-file: "10"
+
+volumes:
+  tor:
+  bitcoin:
+  lnd:
+
+networks:
+  crypto_network:
+    name: crypto_network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/24
+
+services:
+  tor:
+    image: vafanassieff/tor:latest
+    container_name: crypto-tor
+    environment:
+      - SOCKS_PORT=172.22.0.10:9050
+      - CONTROL_PORT=172.22.0.10:9051
+      - SOCKS_POLICY_ACCEPT=172.22.0.0/24
+      - UID=1000
+      - GID=1000
+    volumes:
+      - tor:/var/lib/tor
+    restart: always
+    networks:
+      crypto_network:
+        ipv4_address: 172.22.0.10
+    logging: *default-logging
+
+  bitcoin:
+    image: vafanassieff/bitcoin:0.19.0.1
+    container_name: bitcoin
+    restart: always
+    volumes:
+      - ${PWD}/bitcoin.conf:/bitcoin/.bitcoin/bitcoin.conf
+      - bitcoin:/bitcoin/.bitcoin
+    environment:
+      - UID=1000
+      - GID=1000
+    networks:
+      crypto_network:
+        ipv4_address: 172.22.0.23
+    logging: *default-logging
+
+  lnd:
+    image: vafanassieff/lnd:v0.9.1-beta
+    container_name: lnd
+    restart: always
+    volumes:
+      - tor:/var/lib/tor
+      - ${PWD}/lnd.conf:/lnd/.lnd/lnd.conf
+      - lnd:/lnd/.lnd
+    ports:
+      - 9735:9735
+    environment:
+      - UID=1000
+      - GID=1000
+    networks:
+      traefik_proxy:
+      crypto_network:
+        ipv4_address: 172.22.0.22
+    logging: *default-logging
