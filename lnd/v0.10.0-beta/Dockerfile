@@ -17,8 +17,8 @@ RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION
 RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/manifest-${LND_VERSION}.txt.sig
 RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/manifest-${LND_VERSION}.txt
 RUN wget -O - https://keybase.io/roasbeef/pgp_keys.asc | gpg --import
-RUN gpg --verify manifest-v0.9.1-beta.txt.sig || exit 1
-RUN shasum -c manifest-v0.9.1-beta.txt --ignore-missing || exit 1
+RUN gpg --verify manifest-${LND_VERSION}.txt.sig || exit 1
+RUN shasum -c manifest-${LND_VERSION}.txt --ignore-missing || exit 1
 
 RUN tar -xvzf vendor.tar.gz
 RUN tar -xvzf lnd-source-${LND_VERSION}.tar.gz
