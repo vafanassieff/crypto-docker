@@ -34,7 +34,7 @@ RUN apk --no-cache add \
     shadow
 
 RUN addgroup --system lndmon
-RUN adduser lndmon --system --home /lnd -G lndmon
+RUN adduser lndmon --system --home /lndmon -G lndmon
 
 COPY entrypoint.sh /entrypoint.sh
 

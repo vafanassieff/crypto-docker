@@ -2,6 +2,7 @@
 
 set -e
 
+LNDMON_PATH="/lndmon"
 LISTEN_ADDRESS="0.0.0.0:9092"
 LND_NETWORK="testnet"
 LND_HOST="lnd-testnet"
@@ -33,6 +34,11 @@ if [ ! -z "${GID}" ]; then
     groupmod -o -g "${GID}" lndmon
   fi
 fi
+
+if [ ! '$(stat -c %u "${LNDMON_PATH}")' = "$(id -u lndmon)" ]; then
+  chown -R lndmon:lndmon $LNDMON_PATH
+fi
+
 
 if [ "$1" = "lndmon" ]; then
   exec su-exec lndmon "$@" --prometheus.listenaddr=$LISTEN_ADDRESS \
