@@ -24,10 +24,10 @@ RUN tar -xvzf vendor.tar.gz
 RUN tar -xvzf lnd-source-${LND_VERSION}.tar.gz
 
 RUN CGO_ENABLED=0 GOOS=${OS} GOARCH=${ARCH} GO111MODULE=on go build -v -mod=vendor -trimpath \
-    -tags="autopilotrpc signrpc walletrpc chainrpc invoicesrpc routerrpc watchtowerrpc" \
+    -tags="autopilotrpc signrpc walletrpc chainrpc invoicesrpc routerrpc watchtowerrpc monitoring" \
     -ldflags "-s -w -buildid= -X github.com/lightningnetwork/lnd/build.Commit=${LND_VERSION}" ./cmd/lnd
 RUN CGO_ENABLED=0 GOOS=${OS} GOARCH=${ARCH} GO111MODULE=on go build -v -mod=vendor -trimpath \
-    -tags="autopilotrpc signrpc walletrpc chainrpc invoicesrpc routerrpc watchtowerrpc" \
+    -tags="autopilotrpc signrpc walletrpc chainrpc invoicesrpc routerrpc watchtowerrpc monitoring" \
     -ldflags "-s -w -buildid= -X github.com/lightningnetwork/lnd/build.Commit=${LND_VERSION}" ./cmd/lncli
 
 FROM alpine
