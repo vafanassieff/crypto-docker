@@ -2,12 +2,12 @@
 
 set -e
 
-LNDMON_PATH="/lndmon"
-LISTEN_ADDRESS="0.0.0.0:9092"
-LND_NETWORK="testnet"
-LND_HOST="lnd-testnet"
-MACAROON_DIR="/lndmon/lnd"
-TLS_CERT_PATH="/lndmon/lnd/tls.cert"
+D_LNDMON_PATH=${LNDMON_PATH:-/lndmon}
+D_LISTEN_ADDRESS=${LISTEN_ADDRESS:-0.0.0.0:9092}
+D_LND_NETWORK=${LND_NETWORK:-testnet}
+D_LND_HOST=${LND_HOST:-lnd-testnet}
+D_MACAROON_DIR=${MACAROON_DIR:-/lndmon/lnd/macaroons}
+D_TLS_CERT_PATH=${TLS_CERT_PATH:-/lndmon/lnd/tls.cert}
 
 # Setup user/group ids
 if [ ! -z "${UID}" ]; then
@@ -36,14 +36,17 @@ if [ ! -z "${GID}" ]; then
 fi
 
 if [ ! '$(stat -c %u "${LNDMON_PATH}")' = "$(id -u lndmon)" ]; then
-  chown -R lndmon:lndmon $LNDMON_PATH
+  chown -R lndmon:lndmon $D_LNDMON_PATH
 fi
 
 
 if [ "$1" = "lndmon" ]; then
-  exec su-exec lndmon "$@" --prometheus.listenaddr=$LISTEN_ADDRESS \
-  --lnd.network=$LND_NETWORK --lnd.host=$LND_HOST \
-  --lnd.macaroondir=$MACAROON_DIR --lnd.tlspath=$TLS_CERT_PATH
+  OPTIONS="--prometheus.listenaddr=$D_LISTEN_ADDRESS\
+  --lnd.network=$D_LND_NETWORK --lnd.host=$D_LND_HOST\
+  --lnd.macaroondir=$D_MACAROON_DIR --lnd.tlspath=$D_TLS_CERT_PATH"
+  echo "starting lndmon with options $OPTIONS"
+
+  exec su-exec lndmon "$@" $OPTIONS
 fi
 
 echo "Executing $@"
