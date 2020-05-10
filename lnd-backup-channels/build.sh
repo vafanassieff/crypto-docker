@@ -14,7 +14,6 @@ if [ "$1" == "registry" ]; then
 
     # For my personal registry ...
     IMAGE="registry.afa.ovh/$NAME"
-    docker build -t $IMAGE_NAME:$VERSION .
     echo "Building $IMAGE"
     docker build -t $IMAGE:latest .
     docker login registry.gitlab.com
