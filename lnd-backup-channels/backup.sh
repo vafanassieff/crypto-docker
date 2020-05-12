@@ -2,10 +2,7 @@
 
 set -e -o pipefail
 
-while true; do
-    inotifywait ${LND_CHANNEL_BACKUP_DIR}/channel.backup
-    cp ${LND_CHANNEL_BACKUP_DIR}/channel.backup ${BACKUP_DIR}/channel.backup
-
+upload () {
     if [ ! -z "$AWS_SECRET_ACCESS_KEY" ] && [ ! -z "$AWS_ACCESS_KEY_ID" ] && [ ! -z "$AWS_S3_BUCKET" ]; then
         aws s3 cp ${BACKUP_DIR}/channel.backup s3://${AWS_S3_BUCKET}/${AWS_S3_BUCKET_PATH}
     fi
@@ -18,4 +15,14 @@ while true; do
             --header "Content-Type: application/octet-stream" \
             --data-binary @${BACKUP_DIR}/channel.backup
     fi
+}
+
+echo "Doing first backup ..."
+cp ${LND_CHANNEL_BACKUP_DIR}/channel.backup ${BACKUP_DIR}/channel.backup
+upload
+
+while true; do
+    inotifywait ${LND_CHANNEL_BACKUP_DIR}/channel.backup
+    cp ${LND_CHANNEL_BACKUP_DIR}/channel.backup ${BACKUP_DIR}/channel.backup
+    upload
 done
