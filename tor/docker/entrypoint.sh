@@ -38,6 +38,19 @@ if [ ! -z "$CONTROL_PORT" ] && [ -f "$TOR_CONF_PATH" ]; then
     edit_conf "ControlPort" $CONTROL_PORT
 fi
 
+if [ ! -z "$COOKIE_AUTH" ] && [ -f "$TOR_CONF_PATH" ]; then
+    edit_conf "CookieAuthentication" "1"
+fi
+
+if [ ! -z "$PASSWORD" ] && [ -f "$TOR_CONF_PATH" ]; then
+    HASHEDPASSWORD=$(exec su-exec tor tor --hash-password ${PASSORD}})
+    edit_conf "HashedControlPassword" $HASHEDPASSWORD
+else
+    LINE=$(cat $TOR_CONF_PATH | grep -n "HashedControlPassword" | cut -c1)
+    sed "${LINE}d" $TOR_CONF_PATH > /tmp.conf
+    cat /tmp.conf > $TOR_CONF_PATH && rm /tmp.conf
+fi
+
 cat $TOR_CONF_PATH
 
 if [ $1 = "tor" ];then

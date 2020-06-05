@@ -11,7 +11,8 @@ RUN addgroup --system tor && \
 RUN echo $'SOCKSPort 9050\n\
 Log notice stdout\n\
 ControlPort 9051\n\
-CookieAuthentication 1' > /etc/tor/torrc
+HashedControlPassword remove me\n\
+CookieAuthentication 0' > /etc/tor/torrc
 
 COPY ./entrypoint.sh /entrypoint.sh
 
