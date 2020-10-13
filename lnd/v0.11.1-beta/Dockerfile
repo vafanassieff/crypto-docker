@@ -1,38 +1,33 @@
-FROM golang:1.13.10-alpine as lnd
+FROM golang:1.14.9-alpine as lnd
 
 LABEL maintainer="victor@afanassieff.com"
 
 ENV LND_VERSION v0.11.1-beta
 ENV OS linux
 ENV ARCH amd64
+ENV GODEBUG netdns=cgo
 
 RUN apk add \
     gnupg \
-    perl-utils
+    perl-utils\
+    make \
+    gcc
 
 WORKDIR /opt
 
-RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/lnd-source-${LND_VERSION}.tar.gz
-RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/vendor.tar.gz
+RUN wget https://github.com/lightningnetwork/lnd/archive/${LND_VERSION}.tar.gz
 RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/manifest-${LND_VERSION}.txt.sig
 RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/manifest-${LND_VERSION}.txt
-RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/manifest-${LND_VERSION}.txt.ots
 RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/roasbeef-manifest-${LND_VERSION}.txt.sig
 
 
 RUN wget -O - https://keybase.io/roasbeef/pgp_keys.asc | gpg --import
 RUN gpg --verify roasbeef-manifest-${LND_VERSION}.txt.sig manifest-${LND_VERSION}.txt
-RUN shasum -c manifest-${LND_VERSION}.txt --ignore-missing || exit 1
 
-RUN tar -xvzf vendor.tar.gz
-RUN tar -xvzf lnd-source-${LND_VERSION}.tar.gz
-
-RUN CGO_ENABLED=0 GOOS=${OS} GOARCH=${ARCH} GO111MODULE=on go build -v -mod=vendor -trimpath \
-    -tags="autopilotrpc chainrpc invoicesrpc routerrpc signrpc walletrpc watchtowerrpc wtclientrpc monitoring" \
-    -ldflags "-s -w -buildid= -X github.com/lightningnetwork/lnd/build.Commit=${LND_VERSION}" ./cmd/lnd
-RUN CGO_ENABLED=0 GOOS=${OS} GOARCH=${ARCH} GO111MODULE=on go build -v -mod=vendor -trimpath \
-    -tags="autopilotrpc chainrpc invoicesrpc routerrpc signrpc walletrpc watchtowerrpc wtclientrpc monitoring" \
-    -ldflags "-s -w -buildid= -X github.com/lightningnetwork/lnd/build.Commit=${LND_VERSION}" ./cmd/lncli
+RUN tar -xvzf ${LND_VERSION}.tar.gz
+RUN ls -la && cd lnd-${LND_VERSION:1} \
+    &&  make \
+    &&  make install tags="autopilotrpc chainrpc invoicesrpc routerrpc signrpc walletrpc watchtowerrpc wtclientrpc monitoring"
 
 FROM alpine
 
@@ -40,8 +35,8 @@ LABEL maintainer="victor@afanassieff.com"
 
 ENV LND_VERSION v0.11.1-beta
 
-COPY --from=lnd /opt/lncli /usr/local/bin/
-COPY --from=lnd /opt/lnd /usr/local/bin/
+COPY --from=lnd /go/bin/lncli /usr/local/bin/
+COPY --from=lnd /go/bin/lnd /usr/local/bin/
 
 RUN apk add \
     libressl \
