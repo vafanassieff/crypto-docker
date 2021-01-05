@@ -20,9 +20,8 @@ RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION
 RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/manifest-${LND_VERSION}.txt
 RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/roasbeef-manifest-${LND_VERSION}.txt.sig
 
-
-RUN wget -O - https://keybase.io/roasbeef/pgp_keys.asc | gpg --import
-RUN gpg --verify roasbeef-manifest-${LND_VERSION}.txt.sig manifest-${LND_VERSION}.txt
+RUN wget -O - https://keybase.io/bitconner/pgp_keys.asc | gpg --import
+RUN gpg --verify manifest-v0.11.1-beta.txt.sig
 
 RUN tar -xvzf ${LND_VERSION}.tar.gz
 RUN ls -la && cd lnd-${LND_VERSION:1} \
