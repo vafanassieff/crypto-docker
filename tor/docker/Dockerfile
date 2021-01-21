@@ -1,22 +1,18 @@
 FROM alpine
 
 RUN apk update && \
-    apk add tor su-exec shadow
+    apk add tor su-exec shadow bash
 
 RUN addgroup --system tor && \
     addgroup tor tor && \
     userdel guest && \
     groupdel users
 
-RUN echo $'SOCKSPort 9050\n\
-Log notice stdout\n\
-ControlPort 9051\n\
-HashedControlPassword remove me\n\
-CookieAuthentication 0' > /etc/tor/torrc
-
 COPY ./entrypoint.sh /entrypoint.sh
 
 EXPOSE 9050 9051
+
+USER tor
 
 VOLUME [ "/var/lib/tor" ]
 
