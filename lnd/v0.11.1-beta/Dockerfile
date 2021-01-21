@@ -33,6 +33,8 @@ FROM alpine
 LABEL maintainer="victor@afanassieff.com"
 
 ENV LND_VERSION v0.11.1-beta
+ENV LND_PATH=/lnd
+ENV LND_CONF_PATH=$LND_PATH/.lnd/lnd.conf
 
 COPY --from=lnd /go/bin/lncli /usr/local/bin/
 COPY --from=lnd /go/bin/lnd /usr/local/bin/
