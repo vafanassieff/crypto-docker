@@ -36,9 +36,11 @@ if [ "$1" = "lnd" ]; then
   cmd="$*"
   if [ ! -z "${BITCOIND_RPCPASS}" ]; then
     cmd=${cmd/BITCOIND_RPCPASS/$BITCOIND_RPCPASS}
-
-    exec su-exec lnd $cmd
   fi
+  if [ ! -z "${BITCOIND_RPCPASS}" ]; then
+    cmd=${cmd/TOR_PASSWORD/$TOR_PASSWORD}
+  fi
+  exec su-exec lnd $cmd
 elif [ "$1" = "lnd-cli" ] || [ "$1" = "lnd-tx" ]; then
   exec su-exec lnd "$@"
 else

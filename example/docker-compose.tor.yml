@@ -54,12 +54,13 @@ services:
       -rpcauth=local:a22bf839241c810053fbe2d5c1d7352c$$f8a3ed07bb2f8385520d7b665abe8ee82a9cca98a8023894f0fbea958e00bb24
 
   lnd:
-    image: vafanassieff/lnd:v0.11.1-beta
+    image: registry.afa.ovh/lnd:v0.11.1-beta
     container_name: lnd
     hostname: lnd
     restart: unless-stopped
     environment:
       - BITCOIND_RPCPASS=test
+      - TOR_PASSWORD=secret_password
     volumes:
       - lnd:/lnd/.lnd
     depends_on:
@@ -93,4 +94,4 @@ services:
       --tor.targetipaddress=172.86.2.101
       --tor.streamisolation
       --tor.v3
-      --tor.password=secret_password
+      --tor.password=TOR_PASSWORD
