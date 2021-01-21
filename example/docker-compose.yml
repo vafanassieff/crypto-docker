@@ -1,0 +1,72 @@
+version: '3.7'
+
+networks:
+  local:
+    name: local
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.86.1.0/24
+
+volumes:
+  bitcoin:
+  lnd:
+
+services:
+  bitcoin:
+    image: vafanassieff/bitcoin:0.20.0
+    container_name: bitcoin
+    hostname: bitcoin
+    restart: unless-stopped
+    volumes:
+      - bitcoin:/bitcoin/.bitcoin
+    networks:
+      - local
+    command: >-
+      bitcoind -server=1
+      -regtest=1
+      -listenonion=0
+      -txindex=1
+      -dnsseed=0
+      -upnp=0
+      -listen=1
+      -debug=1
+      -fallbackfee=0.0002
+      -zmqpubrawblock=tcp://0.0.0.0:28334
+      -zmqpubrawtx=tcp://0.0.0.0:28335 
+      -rpcbind=0.0.0.0
+      -rpcallowip=0.0.0.0/0
+      -rpcport=18443
+      -rpcauth=local:a22bf839241c810053fbe2d5c1d7352c$$f8a3ed07bb2f8385520d7b665abe8ee82a9cca98a8023894f0fbea958e00bb24
+
+  lnd:
+    image: vafanassieff/lnd:v0.11.1-beta
+    container_name: lnd
+    hostname: lnd
+    restart: unless-stopped
+    environment:
+      - BITCOIND_RPCPASS=test
+    volumes:
+      - lnd:/lnd/.lnd
+    networks:
+      - local
+    depends_on:
+      - bitcoin
+    command: >-
+      lnd --noseedbackup
+      --maxpendingchannels=10
+      --trickledelay=5000 
+      --alias=lnd
+      --externalip=172.86.1.101
+      --tlsextraip=172.86.1.101
+      --listen=0.0.0.0:9735
+      --rpclisten=0.0.0.0:10009
+      --restlisten=0.0.0.0:8080
+      --bitcoin.active
+      --bitcoin.regtest
+      --bitcoin.node=bitcoind
+      --bitcoind.rpchost=bitcoin:18443
+      --bitcoind.rpcuser=local
+      --bitcoind.rpcpass=BITCOIND_RPCPASS
+      --bitcoind.zmqpubrawblock=tcp://bitcoin:28334
+      --bitcoind.zmqpubrawtx=tcp://bitcoin:28335
