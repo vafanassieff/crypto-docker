@@ -23,7 +23,8 @@ services:
     networks:
       - local
     command: >-
-      bitcoind -server=1
+      bitcoind
+      -server=1
       -regtest=1
       -listenonion=0
       -txindex=1
@@ -53,7 +54,8 @@ services:
     depends_on:
       - bitcoin
     command: >-
-      lnd --noseedbackup
+      lnd
+      --noseedbackup
       --maxpendingchannels=10
       --trickledelay=5000 
       --alias=lnd

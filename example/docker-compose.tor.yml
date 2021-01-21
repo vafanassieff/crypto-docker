@@ -36,7 +36,8 @@ services:
       crypto_tor:
         ipv4_address: 172.86.2.100
     command: >-
-      bitcoind -server=1
+      bitcoind
+      -server=1
       -regtest=1
       -listenonion=0
       -txindex=1
@@ -68,7 +69,8 @@ services:
       crypto_tor:
         ipv4_address: 172.86.2.101
     command: >-
-      lnd --noseedbackup
+      lnd
+      --noseedbackup
       --maxpendingchannels=10
       --trickledelay=5000 
       --alias=lnd

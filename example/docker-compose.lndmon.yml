@@ -79,8 +79,9 @@ services:
 
   lndmon:
     image: vafanassieff/lndemon:v0.2.0
+    hostname: lndmon
     container_name: lndmon
-    restart: always
+    restart: unless-stopped
     ports:
       - 9092:9092
     volumes:
