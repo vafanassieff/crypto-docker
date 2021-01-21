@@ -14,12 +14,13 @@ volumes:
 
 services:
   tor:
-    image: registry.afa.ovh/tor
+    image: vafanassieff/tor
     container_name: tor
     restart: always
     environment:
       - TOR_SOCKSPort=172.86.2.201:9050
       - TOR_ControlPort=172.86.2.201:9051
+      - TOR_ClientOnly=1
       - PASSWORD=secret_password
     networks:
       crypto_tor:
@@ -54,7 +55,7 @@ services:
       -rpcauth=local:a22bf839241c810053fbe2d5c1d7352c$$f8a3ed07bb2f8385520d7b665abe8ee82a9cca98a8023894f0fbea958e00bb24
 
   lnd:
-    image: registry.afa.ovh/lnd:v0.11.1-beta
+    image: vafanassieff/lnd:v0.11.1-beta
     container_name: lnd
     hostname: lnd
     restart: unless-stopped
