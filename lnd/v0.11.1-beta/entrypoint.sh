@@ -41,7 +41,7 @@ if [ "$1" = "lnd" ]; then
     cmd=${cmd/TOR_PASSWORD/$TOR_PASSWORD}
   fi
   exec su-exec lnd $cmd
-elif [ "$1" = "lnd-cli" ] || [ "$1" = "lnd-tx" ]; then
+elif [ "$1" = "lncli" ]; then
   exec su-exec lnd "$@"
 else
   exec "$@"
