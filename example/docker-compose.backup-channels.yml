@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 networks:
   local:
@@ -14,7 +14,7 @@ volumes:
 
 services:
   bitcoin:
-    image: vafanassieff/bitcoin:0.20.0
+    image: vafanassieff/bitcoin:0.21.0
     container_name: bitcoin
     hostname: bitcoin
     restart: unless-stopped
@@ -42,12 +42,10 @@ services:
       -rpcauth=local:a22bf839241c810053fbe2d5c1d7352c$$f8a3ed07bb2f8385520d7b665abe8ee82a9cca98a8023894f0fbea958e00bb24
 
   lnd:
-    image: vafanassieff/lnd:v0.11.1-beta
+    image: vafanassieff/lnd:v0.12.0-beta
     container_name: lnd
     hostname: lnd
     restart: unless-stopped
-    environment:
-      - BITCOIND_RPCPASS=test
     volumes:
       - lnd:/lnd/.lnd
     depends_on:
@@ -71,7 +69,7 @@ services:
       --bitcoin.node=bitcoind
       --bitcoind.rpchost=bitcoin:18443
       --bitcoind.rpcuser=local
-      --bitcoind.rpcpass=BITCOIND_RPCPASS
+      --bitcoind.rpcpass=test
       --bitcoind.zmqpubrawblock=tcp://bitcoin:28334
       --bitcoind.zmqpubrawtx=tcp://bitcoin:28335
 
