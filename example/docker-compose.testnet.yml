@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+  bitcoin:
+    image: vafanassieff/bitcoin:0.21.0
+    container_name: bitcoin
+    hostname: bitcoin
+    restart: unless-stopped
+    volumes:
+      - ${PWD}/data/bitcoin/testnet:/bitcoin/.bitcoin
+      - ${PWD}/config/bitcoint.testnet.conf:/conf/bitcoin.conf
+    command: bitcoind -conf=/conf/bitcoin.conf
