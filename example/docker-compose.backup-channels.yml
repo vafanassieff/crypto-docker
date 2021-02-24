@@ -42,7 +42,7 @@ services:
       -rpcauth=local:a22bf839241c810053fbe2d5c1d7352c$$f8a3ed07bb2f8385520d7b665abe8ee82a9cca98a8023894f0fbea958e00bb24
 
   lnd:
-    image: vafanassieff/lnd:v0.12.0-beta
+    image: vafanassieff/lnd:v0.12.1-beta
     container_name: lnd
     hostname: lnd
     restart: unless-stopped
