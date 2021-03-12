@@ -2,6 +2,8 @@ FROM golang:1.14-alpine as builder
 
 LABEL maintainer="victor@afanassieff.com"
 
+ENV LNDMON_VERSION=v0.2.0
+
 RUN apk add --no-cache git gcc musl-dev
 
 RUN apk add --no-cache --update alpine-sdk \
@@ -14,7 +16,7 @@ WORKDIR /opt
 
 RUN git clone https://github.com/lightninglabs/lndmon.git && \
     cd lndmon && \
-    git checkout tags/v0.2.0
+    git checkout tags/$LNDMON_VERSION
 
 ENV GO111MODULE on
 
