@@ -2,7 +2,7 @@ FROM golang:1.15.7-alpine as lnd
 
 LABEL maintainer="victor@afanassieff.com"
 
-ENV LND_VERSION v0.12.0-beta
+ENV LND_VERSION=v0.12.1-beta
 ENV OS linux
 ENV ARCH amd64
 ENV GODEBUG netdns=cgo
@@ -17,17 +17,15 @@ WORKDIR /opt
 
 RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/lnd-source-${LND_VERSION}.tar.gz
 RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/manifest-${LND_VERSION}.txt
-RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/manifest-roasbeef-${LND_VERSION}.txt.asc
-RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/manifest-bitconner-${LND_VERSION}.txt.asc
+RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/manifest-roasbeef-${LND_VERSION}.sig
+RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/manifest-bitconner-${LND_VERSION}.sig
 
 RUN wget -O - https://keybase.io/bitconner/pgp_keys.asc | gpg --import && \
     wget -O - https://keybase.io/roasbeef/pgp_keys.asc | gpg --import && \
-    gpg --verify manifest-roasbeef-${LND_VERSION}.txt.asc && \
-    gpg --verify manifest-bitconner-${LND_VERSION}.txt.asc && \
-    grep -q $(sha256sum lnd-source-${LND_VERSION}.tar.gz | cut -d ' ' -f1) manifest-bitconner-${LND_VERSION}.txt.asc || exit 1 && \
-    grep -q $(sha256sum lnd-source-${LND_VERSION}.tar.gz | cut -d ' ' -f1) manifest-roasbeef-${LND_VERSION}.txt.asc || exit 1
+    gpg --verify manifest-roasbeef-${LND_VERSION}.sig manifest-${LND_VERSION}.txt && \
+    gpg --verify manifest-bitconner-${LND_VERSION}.sig manifest-${LND_VERSION}.txt
 
-RUN tar -xvzf lnd-source-v0.12.0-beta.tar.gz && \
+RUN tar -xvzf lnd-source-${LND_VERSION}.tar.gz && \
     cd lnd-source \
     &&  make \
     &&  make install tags="autopilotrpc chainrpc invoicesrpc routerrpc signrpc walletrpc watchtowerrpc wtclientrpc monitoring verrpc"
