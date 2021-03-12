@@ -34,13 +34,6 @@ jobs:
           username: vafanassieff
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Login to Afa Registry
-        uses: docker/login-action@v1
-        with:
-          registry: registry.afa.ovh
-          username: ${{ secrets.REGISTRY_AFA_USER }}
-          password: ${{ secrets.REGISTRY_AFA_PASSWORD }}
-
       - name: Get version
         run: |
           echo 'VERSION='$(grep 'ENV LND_VERSION=' lnd/Dockerfile | cut -f2- -d=) >> $GITHUB_ENV
@@ -56,8 +49,6 @@ jobs:
             ghcr.io/vafanassieff/lnd:${{ env.VERSION }}
             vafanassieff/lnd:latest
             vafanassieff/lnd:${{ env.VERSION }}
-            registry.afa.ovh/lnd:latest
-            registry.afa.ovh/lnd:${{ env.VERSION }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
