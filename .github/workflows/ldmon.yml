@@ -1,6 +1,7 @@
 name: lndmon
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - "master"
@@ -36,7 +37,7 @@ jobs:
 
       - name: Get version
         run: |
-          echo 'VERSION='$(grep 'ENV LNDMON_VERSION=' lndmon/Dockerfile | cut -f2- -d=) >> $GITHUB_ENV
+          echo 'VERSION='$(grep -m 1 'ENV LNDMON_VERSION=' lndmon/Dockerfile | cut -f2- -d=) >> $GITHUB_ENV
 
       - name: Build and push
         id: docker_build
