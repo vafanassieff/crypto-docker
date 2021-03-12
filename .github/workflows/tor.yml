@@ -11,6 +11,9 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
@@ -21,7 +24,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          username: vafanassieff
           password: ${{ secrets.CR_PAT }}
 
       - name: Login to DockerHub
@@ -36,7 +39,9 @@ jobs:
         with:
           context: tor
           push: true
-          tags: ghcr.io/vafanassieff/tor:latest,vafanassieff/tor:latest
+          tags: |
+            ghcr.io/vafanassieff/tor:latest
+            vafanassieff/tor:latest
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
