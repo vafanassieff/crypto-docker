@@ -7,7 +7,6 @@ on:
       - "master"
     paths:
       - "lnd/**"
-      - ".github/workflows/lnd.yml"
 
 jobs:
   docker:

@@ -7,7 +7,6 @@ on:
       - "master"
     paths:
       - "lndmon/**"
-      - ".github/workflows/lndmon.yml"
 
 jobs:
   docker:

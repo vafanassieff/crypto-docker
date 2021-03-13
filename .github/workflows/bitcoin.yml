@@ -7,7 +7,6 @@ on:
       - "master"
     paths:
       - "bitcoin/**"
-      - ".github/workflows/bitcoin.yml"
 
 jobs:
   docker:
