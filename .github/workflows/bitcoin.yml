@@ -45,6 +45,7 @@ jobs:
         with:
           context: bitcoin
           push: true
+          build-args: CORE_COUNT=2
           tags: |
             ghcr.io/vafanassieff/bitcoin:latest
             ghcr.io/vafanassieff/bitcoin:${{ env.VERSION }}
