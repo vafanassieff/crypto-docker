@@ -1,0 +1,97 @@
+FROM alpine as berkleydb
+
+LABEL maintainer="victor@afanassieff.com"
+
+ENV BERKLEY_DB_VERSION=5.1.29.NC
+
+WORKDIR /opt
+
+RUN apk update && apk add \
+    autoconf \
+    automake \
+    libtool \
+    outils-sha256 \
+    build-base
+
+RUN wget http://download.oracle.com/berkeley-db/db-${BERKLEY_DB_VERSION}.tar.gz && \
+    tar -xzvf db-${BERKLEY_DB_VERSION}.tar.gz
+
+WORKDIR /opt/db-${BERKLEY_DB_VERSION}
+# https://gist.github.com/danieldk/5700533
+
+RUN sed s/__atomic_compare_exchange/__atomic_compare_exchange_db/g -i src/dbinc/atomic.h
+
+WORKDIR /opt/db-${BERKLEY_DB_VERSION}/build_unix
+
+RUN ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=/opt/berkleydb && \
+    make -j 4 && \
+    make install
+
+FROM alpine as dogecoin
+
+LABEL maintainer="victor@afanassieff.com"
+
+ENV DOGECOIN_VERSION=1.14.3
+
+WORKDIR /opt
+
+COPY --from=berkleydb /opt/berkleydb /opt/berkleydb
+
+RUN apk update && apk add \
+    make \
+    file \
+    autoconf \
+    automake \ 
+    build-base \
+    libtool \
+    boost-system \
+    boost-program_options \
+    boost-filesystem \ 
+    boost-dev \ 
+    libressl-dev \ 
+    libevent-dev \
+    zeromq-dev
+
+RUN wget https://github.com/dogecoin/dogecoin/archive/refs/tags/v${DOGECOIN_VERSION}.tar.gz
+
+RUN tar -xzf v${DOGECOIN_VERSION}.tar.gz
+
+WORKDIR /opt/dogecoin-${DOGECOIN_VERSION}
+
+RUN ls /opt/berkleydb
+
+RUN ./autogen.sh && \
+    ./configure LDFLAGS="-L/opt/berkleydb/lib/ -ldb_cxx-5.1" \
+        CPPFLAGS="-I/opt/berkleydb/include/" \
+    --prefix=/opt/build
+
+RUN make -j 4 && make install
+
+RUN strip /opt/build/bin/dogecoind
+
+FROM alpine
+
+LABEL maintainer="victor@afanassieff.com"
+
+COPY --from=dogecoin /opt/build /usr/local/
+
+RUN addgroup --system --gid 10000 dogecoin && \
+    adduser --system --home /dogecoin -G dogecoin --uid 10000 dogecoin
+
+RUN apk add \
+    boost \
+    libevent \
+    libressl \
+    libzmq \
+    su-exec \
+    shadow
+
+COPY entrypoint.sh /entrypoint.sh
+
+VOLUME ["/dogecoin/.dogecoin"]
+
+EXPOSE 22555 22556 44555 44556
+
+ENTRYPOINT [ "/entrypoint.sh" ]
+
+CMD ["dogecoin"]
