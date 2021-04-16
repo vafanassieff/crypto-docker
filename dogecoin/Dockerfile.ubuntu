@@ -1,0 +1,28 @@
+FROM ubuntu
+
+LABEL maintainer="victor@afanassieff.com"
+
+ENV DOGECOIN_VERSION=1.14.3
+
+RUN apt-get update && apt-get install -y \
+    wget \
+    gosu
+
+RUN wget https://github.com/dogecoin/dogecoin/releases/download/v${DOGECOIN_VERSION}/dogecoin-${DOGECOIN_VERSION}-x86_64-linux-gnu.tar.gz && \
+    tar -xvf dogecoin-${DOGECOIN_VERSION}-x86_64-linux-gnu.tar.gz && \
+    mv dogecoin-${DOGECOIN_VERSION}/bin/* /usr/local/bin/ && \
+    rm dogecoin-${DOGECOIN_VERSION}-x86_64-linux-gnu.tar.gz && \
+    rm -r dogecoin-${DOGECOIN_VERSION}
+
+RUN addgroup --gid 10000 dogecoin && \
+    adduser --home /home/dogecoin --ingroup dogecoin --uid 10000 dogecoin
+
+COPY entrypoint.ubuntu.sh /entrypoint.sh
+
+VOLUME ["/home/dogecoin/.dogecoin"]
+
+EXPOSE 22555 22556 44555 44556
+
+ENTRYPOINT [ "/entrypoint.sh" ]
+
+CMD ["dogecoind", "-printtoconsole"]
