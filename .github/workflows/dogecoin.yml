@@ -43,7 +43,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: dogecoin
-          file: Dockerfile.ubuntu
+          file: dogecoin/Dockerfile.ubuntu
           push: true
           tags: |
             ghcr.io/vafanassieff/dogecoin:ubuntu-latest
