@@ -1,9 +1,10 @@
-FROM alpine
+FROM alpine:3.13
 
 ENV CONF_PATH=/etc/tor/torrc
 
 RUN apk update && \
-    apk add tor su-exec shadow bash
+    apk add tor su-exec shadow \
+    bash
 
 RUN addgroup --system tor && \
     addgroup tor tor && \

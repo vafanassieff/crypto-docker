@@ -11,21 +11,23 @@ if [ ! -z "$GROUP_ID" ]; then
 fi
 
 if [ $1 = "tor" ];then
-    rm -f $CONF_PATH
+    if [ ! "$USE_CONF" ]; then
+        rm -f $CONF_PATH
 
-    if [ ! -z "$PASSWORD" ]; then
-        echo HashedControlPassword $(tor --hash-password "${PASSWORD}" | tail -n 1) >> /etc/tor/torrc
+        if [ ! -z "$PASSWORD" ]; then
+            echo HashedControlPassword $(tor --hash-password "${PASSWORD}" | tail -n 1) >> /etc/tor/torrc
+        fi
+
+        for tor_options in $(printenv | grep TOR_)
+        do
+            options="${tor_options:4}"
+            readarray -d = -t options <<< "$options"
+            option=${options[0]}
+            value=${options[1]}
+            echo $option $value >> $CONF_PATH
+        done
     fi
 
-    for tor_options in $(printenv | grep TOR_)
-    do
-        options="${tor_options:4}"
-        readarray -d = -t options <<< "$options"
-        option=${options[0]}
-        value=${options[1]}
-        echo $option $value >> $CONF_PATH
-    done
-    cat /etc/tor/torrc
     su-exec tor tor -f $CONF_PATH --verify-config
     exec su-exec tor tor -f $CONF_PATH
 else
