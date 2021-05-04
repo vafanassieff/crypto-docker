@@ -1,4 +1,4 @@
-FROM alpine as berkleydb
+FROM alpine:3.13 as berkleydb
 
 # https://github.com/bitcoin/bitcoin/blob/master/contrib/install_db4.sh
 
@@ -32,12 +32,12 @@ RUN  ../dist/configure --enable-cxx --disable-shared --disable-replication --wit
 RUN make -j ${CORE_COUNT}
 RUN make install
 
-FROM alpine as bitcoin
+FROM alpine:3.13 as bitcoin
 
 LABEL maintainer="victor@afanassieff.com"
 
 ARG CORE_COUNT=4
-ENV BITCOIN_VERSION=0.21.0
+ENV BITCOIN_VERSION=0.21.1
 
 WORKDIR /opt
 
@@ -59,8 +59,8 @@ RUN apk update && apk add \
     zeromq-dev  \
     gnupg
 
-RUN wget https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
-RUN wget https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc && \
+RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
+RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc && \
     grep "bitcoin-${BITCOIN_VERSION}.tar.gz\$" SHA256SUMS.asc | sha256sum -c - && \
     gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 01EA5486DE18A882D4C2684590C8019E36C2E964 && \
     gpg --verify SHA256SUMS.asc
@@ -71,7 +71,7 @@ WORKDIR /opt/bitcoin-${BITCOIN_VERSION}
 
 RUN ./autogen.sh && \
     ./configure BDB_LIBS="-L/opt/berkleydb/lib -ldb_cxx-4.8" BDB_CFLAGS="-I/opt/berkleydb/include" \
-    --prefix=/opt/bitcoin-build \ 
+    --prefix=/opt/build \ 
     --enable-hardening \
     --disable-tests \
     --disable-bench \
@@ -85,17 +85,17 @@ RUN ./autogen.sh && \
 
 RUN make -j ${CORE_COUNT} && make install
 
-RUN strip /opt/bitcoin-build/bin/bitcoind && \
-    strip /opt/bitcoin-build/bin/bitcoin-tx && \
-    strip /opt/bitcoin-build/bin/bitcoin-wallet
+RUN strip /opt/build/bin/bitcoind && \
+    strip /opt/build/bin/bitcoin-tx && \
+    strip /opt/build/bin/bitcoin-wallet
 
-FROM alpine
+FROM alpine:3.13
 
 LABEL maintainer="victor@afanassieff.com"
 
-ENV BITCOIN_VERSION=0.21.0
+ENV BITCOIN_VERSION=0.21.1
 
-COPY --from=bitcoin /opt/bitcoin-build /usr/local/
+COPY --from=bitcoin /opt/build/bin/* /usr/local/bin/
 
 RUN addgroup --system --gid 10000 bitcoin && \
     adduser --system --home /bitcoin -G bitcoin --uid 10000 bitcoin
