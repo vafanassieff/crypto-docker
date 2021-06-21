@@ -1,8 +1,8 @@
-FROM golang:1.15.7-alpine as lnd
+FROM golang:1.16.3-alpine as lnd
 
 LABEL maintainer="victor@afanassieff.com"
 
-ENV LND_VERSION=v0.12.1-beta
+ENV LND_VERSION=v0.13.0-beta
 ENV OS linux
 ENV ARCH amd64
 ENV GODEBUG netdns=cgo
@@ -11,19 +11,19 @@ RUN apk add --no-cache --update \
     alpine-sdk \
     gnupg \
     make \
-    gcc
+    gcc \
+    perl-utils
 
 WORKDIR /opt
 
 RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/lnd-source-${LND_VERSION}.tar.gz
 RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/manifest-${LND_VERSION}.txt
 RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/manifest-roasbeef-${LND_VERSION}.sig
-RUN wget https://github.com/lightningnetwork/lnd/releases/download/${LND_VERSION}/manifest-bitconner-${LND_VERSION}.sig
 
 RUN wget -O - https://keybase.io/bitconner/pgp_keys.asc | gpg --import && \
     wget -O - https://keybase.io/roasbeef/pgp_keys.asc | gpg --import && \
     gpg --verify manifest-roasbeef-${LND_VERSION}.sig manifest-${LND_VERSION}.txt && \
-    gpg --verify manifest-bitconner-${LND_VERSION}.sig manifest-${LND_VERSION}.txt
+    cat  manifest-${LND_VERSION}.txt | grep -q "$(shasum -a 256 lnd-source-${LND_VERSION}.tar.gz)"
 
 RUN tar -xvzf lnd-source-${LND_VERSION}.tar.gz && \
     cd lnd-source \
