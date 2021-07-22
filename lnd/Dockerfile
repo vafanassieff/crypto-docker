@@ -2,7 +2,7 @@ FROM golang:1.16.3-alpine as lnd
 
 LABEL maintainer="victor@afanassieff.com"
 
-ENV LND_VERSION=v0.13.0-beta
+ENV LND_VERSION=v0.13.1-beta
 ENV OS linux
 ENV ARCH amd64
 ENV GODEBUG netdns=cgo
@@ -43,13 +43,14 @@ RUN apk add \
     su-exec \
     shadow
 
-
 RUN addgroup --system --gid 10000 lnd
 RUN adduser lnd --system --uid 10000 --home /lnd -G lnd
 
 COPY ./entrypoint.sh /entrypoint.sh
 
 EXPOSE 9735 9911 10009 8080
+
+VOLUME ["/lnd/.lnd"]
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 
