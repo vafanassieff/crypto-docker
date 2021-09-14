@@ -37,7 +37,7 @@ FROM alpine:3.13 as bitcoin
 LABEL maintainer="victor@afanassieff.com"
 
 ARG CORE_COUNT=4
-ENV BITCOIN_VERSION=0.21.1
+ENV BITCOIN_VERSION=22.0
 
 WORKDIR /opt
 
@@ -47,23 +47,24 @@ RUN apk update && apk add \
     make \
     file \
     autoconf \
-    automake \ 
+    automake \
     build-base \
     libtool \
     boost-system \
     boost-program_options \
-    boost-filesystem \ 
-    boost-dev \ 
+    boost-filesystem \
+    boost-dev \
     libressl-dev \ 
     libevent-dev \
     zeromq-dev  \
     gnupg
 
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
-RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc && \
-    grep "bitcoin-${BITCOIN_VERSION}.tar.gz\$" SHA256SUMS.asc | sha256sum -c - && \
-    gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 01EA5486DE18A882D4C2684590C8019E36C2E964 && \
-    gpg --verify SHA256SUMS.asc
+
+# Removed gpp signature verification
+
+RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS && \
+    grep "bitcoin-${BITCOIN_VERSION}.tar.gz\$" SHA256SUMS | sha256sum -c -
 
 RUN tar -xzf bitcoin-${BITCOIN_VERSION}.tar.gz
 
@@ -71,7 +72,7 @@ WORKDIR /opt/bitcoin-${BITCOIN_VERSION}
 
 RUN ./autogen.sh && \
     ./configure BDB_LIBS="-L/opt/berkleydb/lib -ldb_cxx-4.8" BDB_CFLAGS="-I/opt/berkleydb/include" \
-    --prefix=/opt/build \ 
+    --prefix=/opt/build \
     --enable-hardening \
     --disable-tests \
     --disable-bench \
@@ -93,7 +94,7 @@ FROM alpine:3.13
 
 LABEL maintainer="victor@afanassieff.com"
 
-ENV BITCOIN_VERSION=0.21.1
+ENV BITCOIN_VERSION=22.0
 
 COPY --from=bitcoin /opt/build/bin/* /usr/local/bin/
 
