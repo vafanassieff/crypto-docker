@@ -1,4 +1,4 @@
-FROM golang:1.16.3-alpine as lnd
+FROM golang:1.17.3-alpine as lnd
 
 LABEL maintainer="victor@afanassieff.com"
 
