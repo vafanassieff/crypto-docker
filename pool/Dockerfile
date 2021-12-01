@@ -1,6 +1,6 @@
 FROM alpine as builder
 
-ENV POOL_VERSION=v0.4.1-alpha
+ENV POOL_VERSION=v0.5.1-alpha
 
 WORKDIR /opt
 
@@ -14,7 +14,7 @@ RUN wget https://github.com/lightninglabs/pool/releases/download/${POOL_VERSION}
 RUN wget https://github.com/lightninglabs/pool/releases/download/${POOL_VERSION}/manifest-${POOL_VERSION}.txt
 RUN wget https://github.com/lightninglabs/pool/releases/download/${POOL_VERSION}/manifest-${POOL_VERSION}.txt.sig
 
-RUN wget -nv -O - https://keybase.io/roasbeef/pgp_keys.asc | gpg --import && \
+RUN wget -nv -O - https://keybase.io/guggero/pgp_keys.asc | gpg --import && \
     gpg --verify manifest-${POOL_VERSION}.txt.sig manifest-${POOL_VERSION}.txt && \
     cat  manifest-${POOL_VERSION}.txt | grep -q "$(shasum -a 256 pool-linux-amd64-${POOL_VERSION}.tar.gz)"
 
@@ -22,7 +22,7 @@ RUN tar -xvzf pool-linux-amd64-${POOL_VERSION}.tar.gz
 
 FROM alpine as final
 
-ENV POOL_VERSION=v0.4.1-alpha
+ENV POOL_VERSION=v0.5.1-alpha
 ENV PUID=10002
 ENV PGID=10002
 

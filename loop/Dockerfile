@@ -1,6 +1,6 @@
 FROM alpine as builder
 
-ENV LOOP_VERSION=v0.12.2-beta
+ENV LOOP_VERSION=v0.15.0-beta
 
 WORKDIR /opt
 
@@ -22,7 +22,7 @@ RUN tar -xvzf loop-linux-amd64-${LOOP_VERSION}.tar.gz
 
 FROM alpine as final
 
-ENV LOOP_VERSION=v0.12.2-beta
+ENV LOOP_VERSION=v0.15.0-beta
 ENV PUID=10003
 ENV PGID=10003
 
