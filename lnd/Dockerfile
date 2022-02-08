@@ -2,7 +2,7 @@ FROM golang:1.17.3-alpine as lnd
 
 LABEL maintainer="victor@afanassieff.com"
 
-ENV LND_VERSION=v0.14.1-beta
+ENV LND_VERSION=v0.14.2-beta
 ENV OS linux
 ENV ARCH amd64
 ENV GODEBUG netdns=cgo
@@ -28,7 +28,7 @@ RUN wget -O - https://keybase.io/bitconner/pgp_keys.asc | gpg --import && \
 RUN tar -xvzf lnd-source-${LND_VERSION}.tar.gz && \
     cd lnd-source \
     &&  make \
-    &&  make install tags="autopilotrpc chainrpc invoicesrpc routerrpc signrpc walletrpc watchtowerrpc wtclientrpc monitoring verrpc"
+    &&  make install tags="autopilotrpc chainrpc invoicesrpc routerrpc signrpc walletrpc watchtowerrpc wtclientrpc verrpc"
 
 FROM alpine
 
