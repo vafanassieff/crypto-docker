@@ -1,6 +1,6 @@
 FROM alpine as builder
 
-ENV LIT_VERSION=v0.6.0-alpha
+ENV LIT_VERSION=v0.6.2-alpha
 
 WORKDIR /opt
 
@@ -22,7 +22,7 @@ RUN tar -xvzf lightning-terminal-linux-amd64-${LIT_VERSION}.tar.gz
 
 FROM alpine as final
 
-ENV LIT_VERSION=v0.6.0-alpha
+ENV LIT_VERSION=v0.6.2-alpha
 ENV PUID=10003
 ENV PGID=10003
 
