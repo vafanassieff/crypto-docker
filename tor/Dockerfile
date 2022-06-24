@@ -1,4 +1,4 @@
-FROM alpine:3.16:3.13
+FROM alpine:3.16
 
 ENV CONF_PATH=/etc/tor/torrc
 
