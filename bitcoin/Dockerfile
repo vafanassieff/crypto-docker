@@ -1,4 +1,4 @@
-FROM alpine:3.13 as berkleydb
+FROM alpine:3.16 as berkleydb
 
 # https://github.com/bitcoin/bitcoin/blob/master/contrib/install_db4.sh
 
@@ -32,7 +32,7 @@ RUN  ../dist/configure --enable-cxx --disable-shared --disable-replication --wit
 RUN make -j ${CORE_COUNT}
 RUN make install
 
-FROM alpine:3.13 as bitcoin
+FROM alpine:3.16 as bitcoin
 
 LABEL maintainer="victor@afanassieff.com"
 
@@ -57,7 +57,8 @@ RUN apk update && apk add \
     libressl-dev \ 
     libevent-dev \
     zeromq-dev  \
-    gnupg
+    gnupg \
+    sqlite-dev
 
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
 
@@ -90,7 +91,7 @@ RUN strip /opt/build/bin/bitcoind && \
     strip /opt/build/bin/bitcoin-tx && \
     strip /opt/build/bin/bitcoin-wallet
 
-FROM alpine:3.13
+FROM alpine:3.16
 
 LABEL maintainer="victor@afanassieff.com"
 
@@ -107,7 +108,8 @@ RUN apk add \
     libressl \
     libzmq \
     su-exec \
-    shadow
+    shadow \
+    sqlite
 
 COPY entrypoint.sh /entrypoint.sh
 
