@@ -1,6 +1,6 @@
 FROM alpine as builder
 
-ENV POOL_VERSION=v0.5.1-alpha
+ENV POOL_VERSION=v0.5.7-alpha
 
 WORKDIR /opt
 
@@ -12,17 +12,17 @@ RUN apk --no-cache add \
 
 RUN wget https://github.com/lightninglabs/pool/releases/download/${POOL_VERSION}/pool-linux-amd64-${POOL_VERSION}.tar.gz
 RUN wget https://github.com/lightninglabs/pool/releases/download/${POOL_VERSION}/manifest-${POOL_VERSION}.txt
-RUN wget https://github.com/lightninglabs/pool/releases/download/${POOL_VERSION}/manifest-${POOL_VERSION}.txt.sig
+RUN wget https://github.com/lightninglabs/pool/releases/download/${POOL_VERSION}/manifest-${POOL_VERSION}.sig
 
-RUN wget -nv -O - https://keybase.io/guggero/pgp_keys.asc | gpg --import && \
-    gpg --verify manifest-${POOL_VERSION}.txt.sig manifest-${POOL_VERSION}.txt && \
+RUN gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys F4FC70F07310028424EFC20A8E4256593F177720 && \
+    gpg --verify manifest-${POOL_VERSION}.sig manifest-${POOL_VERSION}.txt && \
     cat  manifest-${POOL_VERSION}.txt | grep -q "$(shasum -a 256 pool-linux-amd64-${POOL_VERSION}.tar.gz)"
 
 RUN tar -xvzf pool-linux-amd64-${POOL_VERSION}.tar.gz
 
 FROM alpine as final
 
-ENV POOL_VERSION=v0.5.1-alpha
+ENV POOL_VERSION=v0.5.7-alpha
 ENV PUID=10002
 ENV PGID=10002
 
