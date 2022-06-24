@@ -37,7 +37,7 @@ FROM alpine:3.13 as bitcoin
 LABEL maintainer="victor@afanassieff.com"
 
 ARG CORE_COUNT=4
-ENV BITCOIN_VERSION=22.0
+ENV BITCOIN_VERSION=23.0
 
 WORKDIR /opt
 
@@ -94,7 +94,7 @@ FROM alpine:3.13
 
 LABEL maintainer="victor@afanassieff.com"
 
-ENV BITCOIN_VERSION=22.0
+ENV BITCOIN_VERSION=23.0
 
 COPY --from=bitcoin /opt/build/bin/* /usr/local/bin/
 
