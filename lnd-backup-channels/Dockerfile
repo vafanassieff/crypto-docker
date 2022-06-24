@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.16
 
 ENV LND_CHANNEL_BACKUP_DIR="/lnd"
 ENV BACKUP_DIR="/backups"

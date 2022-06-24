@@ -1,4 +1,4 @@
-FROM alpine as builder
+FROM alpine:3.16 as builder
 
 ENV LIT_VERSION=v0.6.7-alpha
 
@@ -20,7 +20,7 @@ RUN wget -nv -O - https://keybase.io/guggero/pgp_keys.asc | gpg --import && \
 
 RUN tar -xvzf lightning-terminal-linux-amd64-${LIT_VERSION}.tar.gz
 
-FROM alpine as final
+FROM alpine:3.16 as final
 
 ENV LIT_VERSION=v0.6.7-alpha
 ENV PUID=10003

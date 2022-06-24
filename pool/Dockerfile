@@ -1,4 +1,4 @@
-FROM alpine as builder
+FROM alpine:3.16 as builder
 
 ENV POOL_VERSION=v0.5.7-alpha
 
@@ -20,7 +20,7 @@ RUN gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys F4FC70F07310028424EF
 
 RUN tar -xvzf pool-linux-amd64-${POOL_VERSION}.tar.gz
 
-FROM alpine as final
+FROM alpine:3.16 as final
 
 ENV POOL_VERSION=v0.5.7-alpha
 ENV PUID=10002

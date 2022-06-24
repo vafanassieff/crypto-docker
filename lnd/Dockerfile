@@ -29,7 +29,7 @@ RUN tar -xvzf lnd-source-${LND_VERSION}.tar.gz && \
     &&  make \
     &&  make install tags="autopilotrpc signrpc walletrpc chainrpc invoicesrpc neutrinorpc routerrpc watchtowerrpc monitoring peersrpc kvdb_postrgres and kvdb_etcd"
 
-FROM alpine
+FROM alpine:3.16
 
 LABEL maintainer="victor@afanassieff.com"
 

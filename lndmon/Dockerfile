@@ -22,7 +22,7 @@ ENV GO111MODULE on
 
 RUN cd lndmon/cmd/lndmon && go build
 
-FROM alpine as final
+FROM alpine:3.16 as final
 
 LABEL maintainer="victor@afanassieff.com"
 

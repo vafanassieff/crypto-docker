@@ -1,4 +1,4 @@
-FROM alpine as berkleydb
+FROM alpine:3.16 as berkleydb
 
 LABEL maintainer="victor@afanassieff.com"
 
@@ -27,7 +27,7 @@ RUN ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=/opt/ber
     make -j 4 && \
     make install
 
-FROM alpine as dogecoin
+FROM alpine:3.16 as dogecoin
 
 LABEL maintainer="victor@afanassieff.com"
 
@@ -69,7 +69,7 @@ RUN make -j 4 && make install
 
 RUN strip /opt/build/bin/dogecoind
 
-FROM alpine
+FROM alpine:3.16
 
 LABEL maintainer="victor@afanassieff.com"
 

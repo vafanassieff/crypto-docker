@@ -1,4 +1,4 @@
-FROM alpine as builder
+FROM alpine:3.16 as builder
 
 ENV FARADAY_VERSION=v0.2.8-alpha
 
@@ -20,7 +20,7 @@ RUN gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys F4FC70F07310028424EF
 
 RUN tar -xvzf faraday-linux-amd64-${FARADAY_VERSION}.tar.gz
 
-FROM alpine as final
+FROM alpine:3.16 as final
 
 ENV FARADAY_VERSION=v0.2.8-alpha
 ENV PUID=10001

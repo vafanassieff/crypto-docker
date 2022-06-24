@@ -1,4 +1,4 @@
-FROM alpine as builder
+FROM alpine:3.16 as builder
 
 ENV LOOP_VERSION=v0.19.1-beta
 
@@ -20,7 +20,7 @@ RUN gpg  --keyserver hkps://keyserver.ubuntu.com --recv-keys DE23E73BFA8A0AD5587
 
 RUN tar -xvzf loop-linux-amd64-${LOOP_VERSION}.tar.gz
 
-FROM alpine as final
+FROM alpine:3.16 as final
 
 ENV LOOP_VERSION=v0.19.1-beta
 ENV PUID=10003
