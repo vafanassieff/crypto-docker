@@ -26,12 +26,13 @@ ENV FARADAY_VERSION=v0.2.8-alpha
 ENV PUID=10001
 ENV PGID=10001
 
-COPY --from=builder /opt/faraday-linux-amd64-${FARADAY_VERSION}/faraday /usr/local/bin/
-COPY --from=builder /opt/faraday-linux-amd64-${FARADAY_VERSION}/frcli /usr/local/bin/
+COPY --from=builder /opt/faraday-linux-amd64-${FARADAY_VERSION}/faraday /usr/local/bin/faraday
+COPY --from=builder /opt/faraday-linux-amd64-${FARADAY_VERSION}/frcli /usr/local/bin/frcli
 
 RUN apk --no-cache add \
     su-exec \
-    shadow
+    shadow \
+    libc6-compat
 
 RUN addgroup --system --gid ${PGID} faraday
 RUN adduser faraday --system --uid ${PUID} --home /faraday -G faraday
