@@ -27,7 +27,7 @@ RUN wget -O - https://raw.githubusercontent.com/lightningnetwork/lnd/master/scri
 RUN tar -xvzf lnd-source-${LND_VERSION}.tar.gz && \
     cd lnd-source \
     &&  make \
-    &&  make install tags="autopilotrpc signrpc walletrpc chainrpc invoicesrpc neutrinorpc routerrpc watchtowerrpc monitoring peersrpc kvdb_postrgres and kvdb_etcd"
+    &&  make install tags="autopilotrpc signrpc walletrpc chainrpc invoicesrpc neutrinorpc routerrpc watchtowerrpc monitoring peersrpc kvdb_postrgres kvdb_etcd"
 
 FROM alpine:3.16
 
