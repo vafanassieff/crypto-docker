@@ -2,7 +2,7 @@ FROM golang:1.18.2-alpine as lnd
 
 LABEL maintainer="victor@afanassieff.com"
 
-ENV LND_VERSION=v0.15.0-beta
+ENV LND_VERSION=v0.15.1-beta
 ENV OS linux
 ENV ARCH amd64
 ENV GODEBUG netdns=cgo
