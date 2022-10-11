@@ -1,3 +1,7 @@
+# ⚠️ This repo is deprecated in favor of LN Markets [images repo](https://github.com/ln-markets/images) ⚠️
+
+
+
 ![Bitcoin](https://github.com/vafanassieff/crypto-docker/actions/workflows/bitcoin.yml/badge.svg)
 ![LND](https://github.com/vafanassieff/crypto-docker/actions/workflows/lnd.yml/badge.svg)
 ![lndmon](https://github.com/vafanassieff/crypto-docker/actions/workflows/lndmon.yml/badge.svg)
